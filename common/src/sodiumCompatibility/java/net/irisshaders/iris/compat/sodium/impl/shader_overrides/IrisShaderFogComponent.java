@@ -17,15 +17,15 @@ public class IrisShaderFogComponent {
 
 	public void setup() {
 		if (this.uFogColor != null) {
-			this.uFogColor.set(RenderSystem.getShaderFogColor());
+			this.uFogColor.set(new float[] { RenderSystem.getShaderFog().red(), RenderSystem.getShaderFog().green(), RenderSystem.getShaderFog().blue(), RenderSystem.getShaderFog().alpha()});
 		}
 
 		if (this.uFogStart != null) {
-			this.uFogStart.setFloat(RenderSystem.getShaderFogStart());
+			this.uFogStart.setFloat(RenderSystem.getShaderFog().start());
 		}
 
 		if (this.uFogEnd != null) {
-			this.uFogEnd.setFloat(RenderSystem.getShaderFogEnd());
+			this.uFogEnd.setFloat(RenderSystem.getShaderFog().end());
 		}
 	}
 }

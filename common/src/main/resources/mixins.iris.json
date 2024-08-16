@@ -31,6 +31,8 @@
     "MixinItemBlockRenderTypes",
     "MixinItemInHandRenderer",
     "MixinLevelRenderer",
+    "MixinWeatherRenderer",
+    "MixinSkyRenderer",
     "MixinLevelRenderer_SkipRendering",
     "MixinLightningBoltRenderer",
     "MixinLightTexture",

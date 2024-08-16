@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.Reference2ReferenceLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import net.irisshaders.iris.Iris;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -43,15 +44,15 @@ public class BlockMaterialMapping {
 	}
 
 	private static void addTag(TagEntry tagEntry, Object2IntMap<BlockState> idMap, int intId) {
-		List<TagKey<Block>> compatibleTags = BuiltInRegistries.BLOCK.getTagNames().filter(t -> t.location().getNamespace().equalsIgnoreCase(tagEntry.id().getNamespace()) &&
-			t.location().getPath().equalsIgnoreCase(tagEntry.id().getName())).toList();
+		List<HolderSet.Named<Block>> compatibleTags = BuiltInRegistries.BLOCK.getTags().filter(t -> t.unwrapKey().get().location().getNamespace().equalsIgnoreCase(tagEntry.id().getNamespace()) &&
+			t.unwrapKey().get().location().getPath().equalsIgnoreCase(tagEntry.id().getName())).toList();
 
 		if (compatibleTags.isEmpty()) {
 			Iris.logger.warn("Failed to find the tag " + tagEntry.id());
 		} else if (compatibleTags.size() > 1) {
 			Iris.logger.fatal("You've broke the system; congrats. More than one tag matched " + tagEntry.id());
 		} else {
-			BuiltInRegistries.BLOCK.getTag(compatibleTags.get(0)).get().forEach((block) -> {
+			BuiltInRegistries.BLOCK.getTag(compatibleTags.get(0).key()).get().forEach((block) -> {
 					Map<String, String> propertyPredicates = tagEntry.propertyPredicates();
 
 					if (propertyPredicates.isEmpty()) {

@@ -157,7 +157,7 @@ public class ShaderPackScreen extends Screen implements HudHideable {
 				this.shaderPackList.render(guiGraphics, mouseX, mouseY, delta);
 			}
 		} else {
-			this.renderBlurredBackground(delta);
+			this.renderBlurredBackground();
 			this.showHideButton.render(guiGraphics, mouseX, mouseY, delta);
 		}
 
@@ -359,18 +359,18 @@ public class ShaderPackScreen extends Screen implements HudHideable {
 		}
 	}
 
-	private void processFixedBlur(float tick) {
+	private void processFixedBlur() {
 		PostChain blurEffect = ((GameRendererAccessor) this.minecraft.gameRenderer).getBlurEffect();
 		float g = (float) Math.min(this.minecraft.options.getMenuBackgroundBlurriness(), this.blurTransition.getAsFloat());
 		if (blurEffect != null && g >= 1.0F) {
 			blurEffect.setUniform("Radius", g);
-			blurEffect.process(tick);
+			blurEffect.process(Minecraft.getInstance().getMainRenderTarget(), ((GameRendererAccessor) this.minecraft.gameRenderer).getResourcePool(), this.minecraft.getDeltaTracker());
 		}
 	}
 
 	@Override
-	protected void renderBlurredBackground(float pScreen0) {
-		processFixedBlur(pScreen0);
+	protected void renderBlurredBackground() {
+		processFixedBlur();
 		this.minecraft.getMainRenderTarget().bindWrite(false);
 	}
 

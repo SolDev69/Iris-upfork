@@ -47,6 +47,6 @@ public class IrisFabricHelpers implements IrisPlatformHelpers {
 
 	@Override
 	public KeyMapping registerKeyBinding(KeyMapping keyMapping) {
-		return KeyBindingHelper.registerKeyBinding(keyMapping);
+		return keyMapping;//KeyBindingHelper.registerKeyBinding(keyMapping);
 	}
 }

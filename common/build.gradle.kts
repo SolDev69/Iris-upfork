@@ -45,6 +45,7 @@ dependencies {
     modCompileOnly("org.antlr:antlr4-runtime:4.13.1")
     modCompileOnly("io.github.douira:glsl-transformer:2.0.1")
     modCompileOnly("org.anarres:jcpp:1.4.14")
+    modCompileOnly("net.fabricmc:fabric-loader:$FABRIC_LOADER_VERSION")
 
     modCompileOnly(files(rootDir.resolve("custom_sodium").resolve(SODIUM_FILE.replace("LOADER", "fabric"))))
 

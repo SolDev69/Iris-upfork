@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -38,6 +39,7 @@ import org.joml.Math;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
 
@@ -50,6 +52,7 @@ public final class CommonUniforms {
 	private static final Vector2i ZERO_VECTOR_2i = new Vector2i();
 	private static final Vector4i ZERO_VECTOR_4i = new Vector4i(0, 0, 0, 0);
 	private static final Vector3d ZERO_VECTOR_3d = new Vector3d();
+	private static final Vector3f ZERO_VECTOR_3f = new Vector3f();
 
 	static {
 		GbufferPrograms.init();
@@ -164,7 +167,7 @@ public final class CommonUniforms {
 			})
 			.uniform1f(PER_TICK, "rainStrength", CommonUniforms::getRainStrength)
 			.uniform1f(PER_TICK, "wetness", new SmoothedFloat(directives.getWetnessHalfLife(), directives.getDrynessHalfLife(), CommonUniforms::getRainStrength, updateNotifier))
-			.uniform3d(PER_FRAME, "skyColor", CommonUniforms::getSkyColor)
+			.uniform3f(PER_FRAME, "skyColor", CommonUniforms::getSkyColor)
 			.uniform1f(PER_FRAME, "dhFarPlane", DHCompat::getFarPlane)
 			.uniform1f(PER_FRAME, "dhNearPlane", DHCompat::getNearPlane)
 			.uniform1i(PER_FRAME, "dhRenderDistance", DHCompat::getRenderDistance);
@@ -214,13 +217,16 @@ public final class CommonUniforms {
 		}
 	}
 
-	private static Vector3d getSkyColor() {
+	private static Vector3f getSkyColor() {
 		if (client.level == null || client.cameraEntity == null) {
-			return ZERO_VECTOR_3d;
+			return ZERO_VECTOR_3f;
 		}
-
-		return JomlConversions.fromVec3(client.level.getSkyColor(client.cameraEntity.position(),
-			CapturedRenderingState.INSTANCE.getTickDelta()));
+		int m = client.level.getSkyColor(client.cameraEntity.position(),
+			CapturedRenderingState.INSTANCE.getTickDelta());
+		float r = ARGB.from8BitChannel(ARGB.red(m));
+		float g = ARGB.from8BitChannel(ARGB.green(m));
+		float b = ARGB.from8BitChannel(ARGB.blue(m));
+		return new Vector3f(r, g, b);
 	}
 
 	static float getBlindness() {

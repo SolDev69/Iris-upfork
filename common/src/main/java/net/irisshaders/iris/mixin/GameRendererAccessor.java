@@ -1,5 +1,6 @@
 package net.irisshaders.iris.mixin;
 
+import com.mojang.blaze3d.resource.CrossFrameResourcePool;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
@@ -14,6 +15,9 @@ public interface GameRendererAccessor {
 	PostChain getBlurEffect();
 
 	@Accessor
+	CrossFrameResourcePool getResourcePool();
+
+	@Accessor
 	boolean getRenderHand();
 
 	@Accessor
@@ -26,7 +30,7 @@ public interface GameRendererAccessor {
 	void invokeBobHurt(PoseStack poseStack, float tickDelta);
 
 	@Invoker
-	double invokeGetFov(Camera camera, float tickDelta, boolean b);
+	float invokeGetFov(Camera camera, float tickDelta, boolean b);
 
 	@Invoker("shouldRenderBlockOutline")
 	boolean shouldRenderBlockOutlineA();

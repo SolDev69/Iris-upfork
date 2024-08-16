@@ -131,7 +131,6 @@ public class SodiumTransformer {
 		TranslationUnit tree,
 		Root root,
 		SodiumParameters parameters) {
-		String separateAo = WorldRenderingSettings.INSTANCE.shouldUseSeparateAo() ? "a_Color" : "vec4(a_Color.rgb * a_Color.a, 1.0)";
 		tree.parseAndInjectNodes(t, ASTInjectionPoint.BEFORE_DECLARATIONS,
 			// translated from sodium's chunk_vertex.glsl
 			"vec3 _vert_position;",
@@ -177,7 +176,7 @@ public class SodiumTransformer {
 				"_vert_position = ((_deinterleave_u20x3(a_PositionHi, a_PositionLo) * VERTEX_SCALE) + VERTEX_OFFSET);" +
 					"_vert_tex_diffuse_coord = _get_texcoord() + _get_texcoord_bias();" +
 				"_vert_tex_light_coord = vec2(a_LightAndData.xy);" +
-				"_vert_color = " + separateAo + ";" +
+				"_vert_color = a_Color;" +
 				"_draw_id = a_LightAndData[3]; }",
 
 			"uvec3 _get_relative_chunk_coord(uint pos) {\n" +

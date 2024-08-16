@@ -61,7 +61,6 @@ public class MixinShaderChunkRenderer implements ShaderChunkRendererExt {
 		// Set a sentinel value here, so we can catch it in RegionChunkRenderer and handle it appropriately.
 		activeProgram = null;
 
-		irisChunkProgramOverrides.bindFramebuffer(pass);
 
 		if (ShadowRenderingState.areShadowsCurrentlyBeingRendered()) {
 			// No back face culling during the shadow pass
@@ -70,6 +69,7 @@ public class MixinShaderChunkRenderer implements ShaderChunkRendererExt {
 		}
 
 		pass.startDrawing();
+		irisChunkProgramOverrides.bindFramebuffer(pass);
 
 		override.bind();
 		override.getInterface().setupState();

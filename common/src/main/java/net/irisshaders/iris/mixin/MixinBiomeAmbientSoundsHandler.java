@@ -29,12 +29,13 @@ public class MixinBiomeAmbientSoundsHandler implements BiomeAmbienceInterface {
 
 	@Inject(method = {
 		"method_26271",
-		"lambda$tick$3"
+		"lambda$tick$3",
+		"a(Lnet/minecraft/world/level/biome/AmbientMoodSettings;)V"
 	}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getBrightness(Lnet/minecraft/world/level/LightLayer;Lnet/minecraft/core/BlockPos;)I", ordinal = 0), require = 1)
 	private void calculateConstantMoodiness(AmbientMoodSettings ambientMoodSettings, CallbackInfo ci, @Local BlockPos blockPos) {
 		int j = this.player.level().getBrightness(LightLayer.SKY, blockPos);
 		if (j > 0) {
-			this.constantMoodiness -= (float)j / (float)this.player.level().getMaxLightLevel() * 0.001F;
+			this.constantMoodiness -= (float)j / 15.0f * 0.001F;
 		} else {
 			this.constantMoodiness -= (float)(this.player.level().getBrightness(LightLayer.BLOCK, blockPos) - 1) / (float)ambientMoodSettings.getTickDelay();
 		}

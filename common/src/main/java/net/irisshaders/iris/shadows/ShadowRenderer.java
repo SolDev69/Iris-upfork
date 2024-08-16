@@ -382,6 +382,9 @@ public class ShadowRenderer {
 		PoseStack modelView = createShadowModelView(this.sunPathRotation, this.intervalSize);
 		MODELVIEW = new Matrix4f(modelView.last().pose());
 
+		RenderSystem.getModelViewStack().pushMatrix();
+		RenderSystem.getModelViewStack().set(MODELVIEW);
+
 		levelRenderer.getLevel().getProfiler().push("terrain_setup");
 
 		if (levelRenderer instanceof CullingDataCache) {
@@ -417,9 +420,10 @@ public class ShadowRenderer {
 		// TODO: Only schedule a terrain update if the sun / moon is moving, or the shadow map camera moved.
 		// We have to ensure that we don't regenerate clouds every frame, since that's what needsUpdate ends up doing.
 		// This took up to 10% of the frame time before we applied this fix! That's really bad!
-		boolean regenerateClouds = levelRenderer.shouldRegenerateClouds();
-		((LevelRenderer) levelRenderer).needsUpdate();
-		levelRenderer.setShouldRegenerateClouds(regenerateClouds);
+		//boolean regenerateClouds = levelRenderer.shouldRegenerateClouds();
+		//((LevelRenderer) levelRenderer).needsUpdate();
+		// TODO IMS 1.21.2
+		//levelRenderer.setShouldRegenerateClouds(regenerateClouds);
 
 		// Execute the vanilla terrain setup / culling routines using our shadow frustum.
 		levelRenderer.invokeSetupRender(playerCamera, terrainFrustumHolder.getFrustum(), false, false);
@@ -500,6 +504,7 @@ public class ShadowRenderer {
 
 		MultiBufferSource.BufferSource bufferSource = buffers.bufferSource();
 		EntityRenderDispatcher dispatcher = levelRenderer.getEntityRenderDispatcher();
+		RenderSystem.getModelViewStack().identity();
 
 		if (shouldRenderEntities) {
 			renderedShadowEntities = renderEntities(levelRenderer, dispatcher, bufferSource, modelView, tickDelta, entityShadowFrustum, cameraX, cameraY, cameraZ);
@@ -526,6 +531,8 @@ public class ShadowRenderer {
 		bufferSource.endBatch();
 
 		copyPreTranslucentDepth(levelRenderer);
+
+		RenderSystem.getModelViewStack().set(MODELVIEW);
 
 		levelRenderer.getLevel().getProfiler().popPush("translucent terrain");
 
@@ -560,6 +567,7 @@ public class ShadowRenderer {
 
 		// Restore the old viewport
 		RenderSystem.viewport(0, 0, client.getMainRenderTarget().width, client.getMainRenderTarget().height);
+		RenderSystem.getModelViewStack().popMatrix();
 
 		if (levelRenderer instanceof CullingDataCache) {
 			((CullingDataCache) levelRenderer).restoreState();

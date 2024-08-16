@@ -10,6 +10,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -77,7 +79,7 @@ public abstract class MixinSodiumWorldRenderer {
 	}
 
 	@Inject(method = "isEntityVisible", at = @At("HEAD"), cancellable = true)
-	private void iris$overrideEntityCulling(Entity entity, CallbackInfoReturnable<Boolean> cir) {
+	private void iris$overrideEntityCulling(Entity entity, EntityRenderer<Entity, EntityRenderState> renderer, CallbackInfoReturnable<Boolean> cir) {
 		if (ShadowRenderingState.areShadowsCurrentlyBeingRendered()) cir.setReturnValue(true);
 	}
 

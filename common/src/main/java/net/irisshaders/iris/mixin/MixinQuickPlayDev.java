@@ -8,6 +8,8 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.worldselection.SelectWorldScreen;
 import net.minecraft.client.quickplay.QuickPlay;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LevelSettings;
@@ -27,7 +29,7 @@ public class MixinQuickPlayDev {
 			ci.cancel();
 
 			if (!minecraft.getLevelSource().levelExists(string)) {
-				minecraft.createWorldOpenFlows().createFreshLevel(string, new LevelSettings(string, GameType.CREATIVE, false, Difficulty.HARD, true, new GameRules(), WorldDataConfiguration.DEFAULT),
+				minecraft.createWorldOpenFlows().createFreshLevel(string, new LevelSettings(string, GameType.CREATIVE, false, Difficulty.HARD, true, new GameRules(FeatureFlagSet.of(FeatureFlags.REDSTONE_EXPERIMENTS, FeatureFlags.MINECART_IMPROVEMENTS)), WorldDataConfiguration.DEFAULT),
 					WorldOptions.defaultWithRandomSeed(), WorldPresets::createNormalWorldDimensions, Minecraft.getInstance().screen);
 			} else {
 				minecraft.createWorldOpenFlows().openWorld(string, () -> minecraft.setScreen(new TitleScreen()));

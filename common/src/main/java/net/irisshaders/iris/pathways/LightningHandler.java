@@ -9,6 +9,7 @@ import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.TriState;
 
 import java.util.function.Function;
 
@@ -31,7 +32,7 @@ public class LightningHandler extends RenderType {
 	public static final Function<ResourceLocation, RenderType> MEKANISM_FLAME = Util.memoize(resourceLocation -> {
 		RenderType.CompositeState state = RenderType.CompositeState.builder()
 			.setShaderState(new ShaderStateShard(ShaderAccess::getMekanismFlameShader))
-			.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
+			.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, TriState.DEFAULT, false))
 			.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 			.createCompositeState(true);
 		return create("mek_flame", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 256, true, false, state);

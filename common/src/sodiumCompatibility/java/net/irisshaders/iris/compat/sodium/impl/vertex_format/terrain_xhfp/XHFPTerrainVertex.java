@@ -1,9 +1,12 @@
 package net.irisshaders.iris.compat.sodium.impl.vertex_format.terrain_xhfp;
 
+import net.caffeinemc.mods.sodium.api.util.ColorABGR;
 import net.caffeinemc.mods.sodium.client.render.chunk.terrain.material.Material;
 import net.caffeinemc.mods.sodium.client.render.chunk.vertex.format.ChunkVertexEncoder;
+import net.caffeinemc.mods.sodium.client.render.frapi.helper.ColorHelper;
 import net.irisshaders.iris.compat.sodium.impl.block_context.BlockContextHolder;
 import net.irisshaders.iris.compat.sodium.impl.block_context.ContextAwareVertexWriter;
+import net.irisshaders.iris.shaderpack.materialmap.WorldRenderingSettings;
 import net.irisshaders.iris.vertices.ExtendedDataHelper;
 import net.irisshaders.iris.vertices.NormI8;
 import net.irisshaders.iris.vertices.NormalHelper;
@@ -107,7 +110,7 @@ public class XHFPTerrainVertex implements ChunkVertexEncoder, ContextAwareVertex
 
 			MemoryUtil.memPutInt(ptr +  0L, packPositionHi(x, y, z));
 			MemoryUtil.memPutInt(ptr +  4L, packPositionLo(x, y, z));
-			MemoryUtil.memPutInt(ptr +  8L, vertex.color);
+			MemoryUtil.memPutInt(ptr +  8L, WorldRenderingSettings.INSTANCE.shouldUseSeparateAo() ? ColorABGR.withAlpha(vertex.color, vertex.ao) : ColorHelper.multiplyRGB(vertex.color, vertex.ao));
 			MemoryUtil.memPutInt(ptr + 12L, packTexture(u, v));
 			MemoryUtil.memPutInt(ptr + 16L, packLightAndData(light, material.bits(), section));
 

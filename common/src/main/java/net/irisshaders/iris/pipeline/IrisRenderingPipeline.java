@@ -880,7 +880,7 @@ public class IrisRenderingPipeline implements WorldRenderingPipeline, ShaderRend
 			} else {
 				// Clear depth first, regardless of any color clearing.
 				shadowRenderTargets.getDepthSourceFb().bind();
-				RenderSystem.clear(GL21C.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+				RenderSystem.clear(GL21C.GL_DEPTH_BUFFER_BIT);
 
 				ImmutableList<ClearPass> passes;
 
@@ -1003,7 +1003,7 @@ public class IrisRenderingPipeline implements WorldRenderingPipeline, ShaderRend
 		// A lot of dimension mods touch sky rendering, FabricSkyboxes injects at HEAD and cancels, etc.
 		DimensionSpecialEffects.SkyType skyType = Minecraft.getInstance().level.effects().skyType();
 
-		if (skyType == DimensionSpecialEffects.SkyType.NORMAL || Minecraft.getInstance().level.dimensionType().hasSkyLight()) {
+		if (skyType == DimensionSpecialEffects.SkyType.OVERWORLD || Minecraft.getInstance().level.dimensionType().hasSkyLight()) {
 			RenderSystem.depthMask(false);
 
 			RenderSystem.setShaderColor(fogColor.x, fogColor.y, fogColor.z, fogColor.w);
