@@ -29,23 +29,7 @@ public class LightningHandler extends RenderType {
 			.createCompositeState(false)
 	), new LightningRenderStateShard());
 
-	public static final Function<ResourceLocation, RenderType> MEKANISM_FLAME = Util.memoize(resourceLocation -> {
-		RenderType.CompositeState state = RenderType.CompositeState.builder()
-			.setShaderState(new ShaderStateShard(ShaderAccess::getMekanismFlameShader))
-			.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, TriState.DEFAULT, false))
-			.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-			.createCompositeState(true);
-		return create("mek_flame", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 256, true, false, state);
-	});
-
-	public static final RenderType MEKASUIT = create("mekasuit", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 131_072, true, false,
-		RenderType.CompositeState.builder()
-			.setShaderState(new ShaderStateShard(ShaderAccess::getMekasuitShader))
-			.setTextureState(BLOCK_SHEET)
-			.setLightmapState(LIGHTMAP)
-			.setOverlayState(OVERLAY)
-			.createCompositeState(true)
-	);
+	// TODO MEKANISM AGAIN 24w34a
 
 	public LightningHandler(String pRenderType0, VertexFormat pVertexFormat1, VertexFormat.Mode pVertexFormat$Mode2, int pInt3, boolean pBoolean4, boolean pBoolean5, Runnable pRunnable6, Runnable pRunnable7) {
 		super(pRenderType0, pVertexFormat1, pVertexFormat$Mode2, pInt3, pBoolean4, pBoolean5, pRunnable6, pRunnable7);

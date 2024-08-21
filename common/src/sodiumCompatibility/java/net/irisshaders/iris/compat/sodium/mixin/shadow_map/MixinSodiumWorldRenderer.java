@@ -79,7 +79,7 @@ public abstract class MixinSodiumWorldRenderer {
 	}
 
 	@Inject(method = "isEntityVisible", at = @At("HEAD"), cancellable = true)
-	private void iris$overrideEntityCulling(Entity entity, EntityRenderer<Entity, EntityRenderState> renderer, CallbackInfoReturnable<Boolean> cir) {
+	private void iris$overrideEntityCulling(EntityRenderer<?, ?> renderer, Entity  entity, CallbackInfoReturnable<Boolean> cir) {
 		if (ShadowRenderingState.areShadowsCurrentlyBeingRendered()) cir.setReturnValue(true);
 	}
 

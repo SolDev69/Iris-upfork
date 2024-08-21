@@ -69,15 +69,9 @@ public class MixinSkyRenderer {
 		setPhase(WorldRenderingPhase.VOID);
 	}
 
-	@Inject(method = "renderSun", at = @At(value = "HEAD"))
-	private void iris$renderSky$tiltSun(float f, Tesselator tesselator, PoseStack poseStack, CallbackInfo ci) {
-		poseStack.pushPose();
+	@Inject(method = "renderSunMoonAndStars", at = @At(value = "INVOKE", target = "Lcom/mojang/math/Axis;rotationDegrees(F)Lorg/joml/Quaternionf;", ordinal = 1))
+	private void iris$renderSky$tiltSun(PoseStack poseStack, Tesselator tesselator, float f, int i, float g, float h, FogParameters fogParameters, CallbackInfo ci) {
 		poseStack.mulPose(Axis.ZP.rotationDegrees(getSunPathRotation()));
-	}
-
-	@Inject(method = "renderSun", at = @At(value = "RETURN"))
-	private void iris$renderSky$untiltSun(float f, Tesselator tesselator, PoseStack poseStack, CallbackInfo ci) {
-		poseStack.popPose();
 	}
 
 	private float getSunPathRotation() {

@@ -79,7 +79,6 @@ public class ShaderPackOptionList extends IrisContainerObjectSelectionList<Shade
 
 	@Override
 	protected void renderListBackground(GuiGraphics pAbstractSelectionList0) {
-		if (screen.listTransition.getAsFloat() < 0.02f) return;
 		RenderSystem.enableBlend();
 		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, screen.listTransition.getAsFloat());
 		pAbstractSelectionList0.blit(RenderType::guiTextured,
@@ -93,16 +92,21 @@ public class ShaderPackOptionList extends IrisContainerObjectSelectionList<Shade
 			32,
 			32
 		);
+		pAbstractSelectionList0.flush();
 
 		RenderSystem.disableBlend();
 		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	@Override
 	protected void renderListSeparators(GuiGraphics pAbstractSelectionList0) {
+		if (screen.listTransition.getAsFloat() < 0.02f) return;
+
 		RenderSystem.enableBlend();
 		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, screen.listTransition.getAsFloat());
 		pAbstractSelectionList0.blit(RenderType::guiTextured, CreateWorldScreen.HEADER_SEPARATOR, this.getX(), this.getY() + 2, 0.0F, 0.0F, this.getWidth(), 2, 32, 2);
 		pAbstractSelectionList0.blit(RenderType::guiTextured, CreateWorldScreen.FOOTER_SEPARATOR, this.getX(), this.getBottom(), 0.0F, 0.0F, this.getWidth(), 2, 32, 2);
+		pAbstractSelectionList0.flush();
+
 		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 		RenderSystem.disableBlend();
 	}

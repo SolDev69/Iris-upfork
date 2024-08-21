@@ -27,10 +27,12 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.LevelTargetBundle;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -61,6 +63,7 @@ public class ShaderPackScreen extends Screen implements HudHideable {
 	private static final Component CONFIGURE_TITLE = Component.translatable("pack.iris.configure.title").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
 	private static final int COMMENT_PANEL_WIDTH = 314;
 	private static final String development = "Development Environment";
+	private static final ResourceLocation BLUR_POST_CHAIN_ID = ResourceLocation.withDefaultNamespace("blur");
 	private final Screen parent;
 	private final MutableComponent irisTextComponent;
 	private ShaderPackSelectionList shaderPackList;
@@ -89,7 +92,7 @@ public class ShaderPackScreen extends Screen implements HudHideable {
 		if (guiHidden) {
 			return 0.0f;
 		} else if (this.optionMenuOpen) {
-			return 0.1f;
+			return 1.0f;
 		} else {
 			return (float) this.minecraft.options.getMenuBackgroundBlurriness();
 		}
@@ -360,11 +363,13 @@ public class ShaderPackScreen extends Screen implements HudHideable {
 	}
 
 	private void processFixedBlur() {
-		PostChain blurEffect = ((GameRendererAccessor) this.minecraft.gameRenderer).getBlurEffect();
-		float g = (float) Math.min(this.minecraft.options.getMenuBackgroundBlurriness(), this.blurTransition.getAsFloat());
-		if (blurEffect != null && g >= 1.0F) {
-			blurEffect.setUniform("Radius", g);
-			blurEffect.process(Minecraft.getInstance().getMainRenderTarget(), ((GameRendererAccessor) this.minecraft.gameRenderer).getResourcePool(), this.minecraft.getDeltaTracker());
+		float f = Math.min(this.minecraft.options.getMenuBackgroundBlurriness(), this.blurTransition.getAsFloat());
+		if (f >= 1.0F) {
+			PostChain postChain = this.minecraft.getShaderManager().getPostChain(BLUR_POST_CHAIN_ID, LevelTargetBundle.MAIN_TARGETS);
+			if (postChain != null) {
+				postChain.setUniform("Radius", f);
+				postChain.process(this.minecraft.getMainRenderTarget(), ((GameRendererAccessor) Minecraft.getInstance().gameRenderer).getResourcePool());
+			}
 		}
 	}
 

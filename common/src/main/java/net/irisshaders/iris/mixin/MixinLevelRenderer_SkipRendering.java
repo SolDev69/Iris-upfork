@@ -63,22 +63,4 @@ public class MixinLevelRenderer_SkipRendering {
 			return original.call(instance);
 		}
 	}
-
-	@WrapOperation(method = "renderBlockEntities", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/LevelRenderer;visibleSections:Lit/unimi/dsi/fastutil/objects/ObjectArrayList;"))
-	private ObjectArrayList<SectionRenderDispatcher.RenderSection> skipLocalBlockEntities(LevelRenderer instance, Operation<ObjectArrayList<SectionRenderDispatcher.RenderSection>> original) {
-		if (Iris.getPipelineManager().getPipelineNullable() instanceof IrisRenderingPipeline pipeline && pipeline.skipAllRendering()) {
-			return EMPTY_LIST;
-		} else {
-			return original.call(instance);
-		}
-	}
-
-	@WrapOperation(method = "renderBlockEntities", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/LevelRenderer;globalBlockEntities:Ljava/util/Set;"))
-	private Set<BlockEntity> skipGlobalBlockEntities(LevelRenderer instance, Operation<Set<BlockEntity>> original) {
-		if (Iris.getPipelineManager().getPipelineNullable() instanceof IrisRenderingPipeline pipeline && pipeline.skipAllRendering()) {
-			return Collections.emptySet();
-		} else {
-			return original.call(instance);
-		}
-	}
 }

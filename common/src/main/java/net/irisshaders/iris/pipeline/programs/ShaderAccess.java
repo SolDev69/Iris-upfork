@@ -8,8 +8,10 @@ import net.irisshaders.iris.Iris;
 import net.irisshaders.iris.pipeline.ShaderRenderingPipeline;
 import net.irisshaders.iris.pipeline.WorldRenderingPipeline;
 import net.irisshaders.iris.shadows.ShadowRenderingState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.CompiledShaderProgram;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.ShaderInstance;
 
 public class ShaderAccess {
 	public static VertexFormat IE_FORMAT = VertexFormat.builder()
@@ -20,21 +22,21 @@ public class ShaderAccess {
 		.padding(1)
 		.build();
 
-	public static ShaderInstance getParticleTranslucentShader() {
+	public static CompiledShaderProgram getParticleTranslucentShader() {
 		WorldRenderingPipeline pipeline = Iris.getPipelineManager().getPipelineNullable();
 
 		if (pipeline instanceof ShaderRenderingPipeline) {
-			ShaderInstance override = ((ShaderRenderingPipeline) pipeline).getShaderMap().getShader(ShaderKey.PARTICLES_TRANS);
+			CompiledShaderProgram override = ((ShaderRenderingPipeline) pipeline).getShaderMap().getShader(ShaderKey.PARTICLES_TRANS);
 
 			if (override != null) {
 				return override;
 			}
 		}
 
-		return GameRenderer.getParticleShader();
+		return Minecraft.getInstance().getShaderManager().getProgram(CoreShaders.PARTICLE);
 	}
 
-	public static ShaderInstance getIEVBOShader() {
+	public static CompiledShaderProgram getIEVBOShader() {
 		WorldRenderingPipeline pipeline = Iris.getPipelineManager().getPipelineNullable();
 
 		if (pipeline instanceof ShaderRenderingPipeline) {
@@ -45,7 +47,7 @@ public class ShaderAccess {
 		return null;
 	}
 
-    public static ShaderInstance getMekanismFlameShader() {
+    public static CompiledShaderProgram getMekanismFlameShader() {
 		WorldRenderingPipeline pipeline = Iris.getPipelineManager().getPipelineNullable();
 
 		if (pipeline instanceof ShaderRenderingPipeline) {
@@ -53,16 +55,16 @@ public class ShaderAccess {
 			return ((ShaderRenderingPipeline) pipeline).getShaderMap().getShader(ShadowRenderingState.areShadowsCurrentlyBeingRendered() ? ShaderKey.MEKANISM_FLAME_SHADOW : ShaderKey.MEKANISM_FLAME);
 		}
 
-		return GameRenderer.getPositionTexColorShader();
+		return Minecraft.getInstance().getShaderManager().getProgram(CoreShaders.POSITION_TEX_COLOR);
     }
 
-    public static ShaderInstance getMekasuitShader() {
+    public static CompiledShaderProgram getMekasuitShader() {
 		WorldRenderingPipeline pipeline = Iris.getPipelineManager().getPipelineNullable();
 
 		if (pipeline instanceof ShaderRenderingPipeline) {
 			return ((ShaderRenderingPipeline) pipeline).getShaderMap().getShader(ShadowRenderingState.areShadowsCurrentlyBeingRendered() ? ShaderKey.SHADOW_ENTITIES_CUTOUT : ShaderKey.ENTITIES_TRANSLUCENT);
 		}
 
-		return GameRenderer.getRendertypeEntityCutoutShader();
+		return Minecraft.getInstance().getShaderManager().getProgram(CoreShaders.RENDERTYPE_ENTITY_CUTOUT);
     }
 }

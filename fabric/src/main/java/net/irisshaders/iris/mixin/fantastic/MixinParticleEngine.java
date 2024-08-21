@@ -12,7 +12,6 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.ShaderInstance;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -75,7 +74,7 @@ public class MixinParticleEngine implements PhasedParticleEngine {
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/particle/ParticleRenderType;begin(Lcom/mojang/blaze3d/vertex/Tesselator;Lnet/minecraft/client/renderer/texture/TextureManager;)Lcom/mojang/blaze3d/vertex/BufferBuilder;"))
 	private void iris$changeParticleShader(LightTexture lightTexture, Camera camera, float f, CallbackInfo ci) {
 		if (IrisApi.getInstance().isShaderPackInUse() && phase == ParticleRenderingPhase.TRANSLUCENT) {
-			RenderSystem.setShader(ShaderAccess::getParticleTranslucentShader);
+			RenderSystem.setShader(ShaderAccess.getParticleTranslucentShader());
 		}
 	}
 

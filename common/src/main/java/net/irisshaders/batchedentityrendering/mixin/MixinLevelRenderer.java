@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
@@ -76,8 +77,8 @@ public class MixinLevelRenderer {
 		}
 	}
 
-	@Inject(method = "method_62214", at = @At(value = "CONSTANT", args = "stringValue=translucent"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private void batchedentityrendering$beginTranslucents(FogParameters fogParameters, DeltaTracker deltaTracker, Camera camera, ProfilerFiller profilerFiller, Matrix4f matrix4f, Matrix4f matrix4f2, ResourceHandle resourceHandle, ResourceHandle resourceHandle2, ResourceHandle resourceHandle3, ResourceHandle resourceHandle4, boolean bl, ResourceHandle resourceHandle5, CallbackInfo ci, float f, Vec3 vec3, double d, double e, double g, PoseStack poseStack, MultiBufferSource.BufferSource bufferSource) {
+	@Inject(method = "method_62214", at = @At(value = "CONSTANT", args = "stringValue=translucent"))
+	private void batchedentityrendering$beginTranslucents(FogParameters fogParameters, DeltaTracker deltaTracker, Camera camera, ProfilerFiller profilerFiller, Matrix4f matrix4f, Matrix4f matrix4f2, ResourceHandle resourceHandle, ResourceHandle resourceHandle2, ResourceHandle resourceHandle3, ResourceHandle resourceHandle4, boolean bl, Frustum frustum, ResourceHandle resourceHandle5, CallbackInfo ci) {
 		if (renderBuffers.bufferSource() instanceof FullyBufferedMultiBufferSource fullyBufferedMultiBufferSource) {
 			fullyBufferedMultiBufferSource.readyUp();
 		}
@@ -98,7 +99,7 @@ public class MixinLevelRenderer {
 
 
 	@Inject(method = "method_62214", at = @At(value = "CONSTANT", args = "stringValue=translucent", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
-	private void batchedentityrendering$endTranslucents(FogParameters fogParameters, DeltaTracker deltaTracker, Camera camera, ProfilerFiller profilerFiller, Matrix4f matrix4f, Matrix4f matrix4f2, ResourceHandle resourceHandle, ResourceHandle resourceHandle2, ResourceHandle resourceHandle3, ResourceHandle resourceHandle4, boolean bl, ResourceHandle resourceHandle5, CallbackInfo ci, float f, Vec3 vec3, double d, double e, double g, PoseStack poseStack, MultiBufferSource.BufferSource bufferSource) {
+	private void batchedentityrendering$endTranslucents(FogParameters fogParameters, DeltaTracker deltaTracker, Camera camera, ProfilerFiller profilerFiller, Matrix4f matrix4f, Matrix4f matrix4f2, ResourceHandle resourceHandle, ResourceHandle resourceHandle2, ResourceHandle resourceHandle3, ResourceHandle resourceHandle4, boolean bl, Frustum frustum, ResourceHandle resourceHandle5, CallbackInfo ci) {
 		if (WorldRenderingSettings.INSTANCE.shouldSeparateEntityDraws()) {
 			this.renderBuffers.bufferSource().endBatch();
 		}

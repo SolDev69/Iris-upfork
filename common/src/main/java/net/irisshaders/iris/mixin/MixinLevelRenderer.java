@@ -26,6 +26,7 @@ import net.minecraft.client.CloudStatus;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.FogParameters;
 import net.minecraft.client.renderer.GameRenderer;
@@ -171,7 +172,7 @@ public class MixinLevelRenderer {
 		// We've changed the phase, but vanilla doesn't update the shader program at this point before rendering stuff,
 		// so we need to manually refresh the shader program so that the correct shader override gets applied.
 		// TODO: Move the injection instead
-		RenderSystem.setShader(GameRenderer::getPositionShader);
+		RenderSystem.setShader(CoreShaders.POSITION);
 	}
 
 	@Inject(method = "method_62215", at = @At(value = "RETURN"))
@@ -180,12 +181,12 @@ public class MixinLevelRenderer {
 	}
 
 	@Inject(method = "method_62205", at = @At(value = "HEAD"))
-	private void iris$beginClouds(ResourceHandle resourceHandle, int i, CloudStatus cloudStatus, float f, Matrix4f matrix4f, Matrix4f matrix4f2, Vec3 vec3, float g, CallbackInfo ci) {
+	private void iris$beginClouds(ResourceHandle<?> resourceHandle, int i, CloudStatus cloudStatus, float f, Matrix4f matrix4f, Matrix4f matrix4f2, Vec3 vec3, float g, CallbackInfo ci) {
 		pipeline.setPhase(WorldRenderingPhase.CLOUDS);
 	}
 
 	@Inject(method = "method_62205", at = @At("RETURN"))
-	private void iris$endClouds(ResourceHandle resourceHandle, int i, CloudStatus cloudStatus, float f, Matrix4f matrix4f, Matrix4f matrix4f2, Vec3 vec3, float g, CallbackInfo ci) {
+	private void iris$endClouds(ResourceHandle<?> resourceHandle, int i, CloudStatus cloudStatus, float f, Matrix4f matrix4f, Matrix4f matrix4f2, Vec3 vec3, float g, CallbackInfo ci) {
 		pipeline.setPhase(WorldRenderingPhase.NONE);
 	}
 
@@ -216,13 +217,13 @@ public class MixinLevelRenderer {
 		pipeline.setPhase(WorldRenderingPhase.NONE);
 	}
 
-	@Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/debug/DebugRenderer;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;DDD)V"))
-	private void iris$setDebugRenderStage(FogParameters fogParameters, DeltaTracker deltaTracker, Camera camera, ProfilerFiller profilerFiller, Matrix4f matrix4f, Matrix4f matrix4f2, ResourceHandle resourceHandle, ResourceHandle resourceHandle2, ResourceHandle resourceHandle3, ResourceHandle resourceHandle4, boolean bl, ResourceHandle resourceHandle5, CallbackInfo ci) {
+	@Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/debug/DebugRenderer;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/culling/Frustum;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;DDD)V"))
+	private void iris$setDebugRenderStage(FogParameters fogParameters, DeltaTracker deltaTracker, Camera camera, ProfilerFiller profilerFiller, Matrix4f matrix4f, Matrix4f matrix4f2, ResourceHandle<?> resourceHandle, ResourceHandle<?> resourceHandle2, ResourceHandle<?> resourceHandle3, ResourceHandle<?> resourceHandle4, boolean bl, Frustum frustum, ResourceHandle<?> resourceHandle5, CallbackInfo ci) {
 		pipeline.setPhase(WorldRenderingPhase.DEBUG);
 	}
 
-	@Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/debug/DebugRenderer;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;DDD)V", shift = At.Shift.AFTER))
-	private void iris$resetDebugRenderStage(FogParameters fogParameters, DeltaTracker deltaTracker, Camera camera, ProfilerFiller profilerFiller, Matrix4f matrix4f, Matrix4f matrix4f2, ResourceHandle resourceHandle, ResourceHandle resourceHandle2, ResourceHandle resourceHandle3, ResourceHandle resourceHandle4, boolean bl, ResourceHandle resourceHandle5, CallbackInfo ci) {
+	@Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/debug/DebugRenderer;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/culling/Frustum;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;DDD)V", shift = At.Shift.AFTER))
+	private void iris$resetDebugRenderStage(FogParameters fogParameters, DeltaTracker deltaTracker, Camera camera, ProfilerFiller profilerFiller, Matrix4f matrix4f, Matrix4f matrix4f2, ResourceHandle<?> resourceHandle, ResourceHandle<?> resourceHandle2, ResourceHandle<?> resourceHandle3, ResourceHandle<?> resourceHandle4, boolean bl, Frustum frustum, ResourceHandle<?> resourceHandle5, CallbackInfo ci) {
 		pipeline.setPhase(WorldRenderingPhase.NONE);
 	}
 
@@ -233,7 +234,7 @@ public class MixinLevelRenderer {
 	}
 
 	@Inject(method = "method_62214", at = @At(value = "CONSTANT", args = "stringValue=translucent"))
-	private void iris$beginTranslucents(FogParameters fogParameters, DeltaTracker deltaTracker, Camera camera, ProfilerFiller profilerFiller, Matrix4f modelMatrix, Matrix4f matrix4f2, ResourceHandle resourceHandle, ResourceHandle resourceHandle2, ResourceHandle resourceHandle3, ResourceHandle resourceHandle4, boolean bl, ResourceHandle resourceHandle5, CallbackInfo ci) {
+	private void iris$beginTranslucents(FogParameters fogParameters, DeltaTracker deltaTracker, Camera camera, ProfilerFiller profilerFiller, Matrix4f modelMatrix, Matrix4f matrix4f2, ResourceHandle<?> resourceHandle, ResourceHandle<?> resourceHandle2, ResourceHandle<?> resourceHandle3, ResourceHandle<?> resourceHandle4, boolean bl, Frustum frustum, ResourceHandle<?> resourceHandle5, CallbackInfo ci) {
 		pipeline.beginHand();
 		HandRenderer.INSTANCE.renderSolid(modelMatrix, deltaTracker.getGameTimeDeltaPartialTick(true), camera, Minecraft.getInstance().gameRenderer, pipeline);
 		Minecraft.getInstance().getProfiler().popPush("iris_pre_translucent");

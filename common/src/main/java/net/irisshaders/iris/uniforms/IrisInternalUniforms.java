@@ -12,19 +12,23 @@ import static net.irisshaders.iris.gl.uniform.UniformUpdateFrequency.PER_FRAME;
  * Internal Iris uniforms that are not directly accessible by shaders.
  */
 public class IrisInternalUniforms {
+	private static final Vector4f ONE = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+
 	private IrisInternalUniforms() {
 		// no construction
 	}
 
 	public static void addFogUniforms(DynamicUniformHolder uniforms, FogMode fogMode) {
 		uniforms
-			.uniform4f(PER_FRAME, "iris_FogColor", () -> {
+			.uniform4f("iris_FogColor", () -> {
 				FogParameters fog = RenderSystem.getShaderFog();
-				return new Vector4f(fog.red(), fog.green(), fog.blue(), fog.alpha());
-			});
 
-		uniforms.uniform1f(PER_FRAME, "iris_FogStart", () -> RenderSystem.getShaderFog().start())
-			.uniform1f(PER_FRAME, "iris_FogEnd", () -> RenderSystem.getShaderFog().end());
+				if (fog == FogParameters.NO_FOG) return ONE;
+				return new Vector4f(fog.red(), fog.green(), fog.blue(), fog.alpha());
+			}, t -> {});
+
+		uniforms.uniform1f("iris_FogStart", () -> RenderSystem.getShaderFog().start(), t -> {})
+			.uniform1f("iris_FogEnd", () -> RenderSystem.getShaderFog().end(), t -> {});
 
 		uniforms.uniform1f("iris_FogDensity", () -> {
 			// ensure that the minimum value is 0.0

@@ -39,7 +39,7 @@ public class MixinTheEndPortalRenderer {
 		return 0.375F;
 	}
 
-	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "render(Lnet/minecraft/world/level/block/entity/TheEndPortalBlockEntity;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V", at = @At("HEAD"), cancellable = true)
 	public void iris$onRender(TheEndPortalBlockEntity entity, float tickDelta, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, int overlay, CallbackInfo ci) {
 		if (!Iris.getCurrentPack().isPresent()) {
 			return;

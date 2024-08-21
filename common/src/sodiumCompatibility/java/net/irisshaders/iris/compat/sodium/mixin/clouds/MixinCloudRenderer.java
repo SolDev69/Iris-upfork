@@ -11,7 +11,7 @@ import net.irisshaders.iris.pipeline.ShaderRenderingPipeline;
 import net.irisshaders.iris.pipeline.WorldRenderingPipeline;
 import net.irisshaders.iris.pipeline.programs.ShaderKey;
 import net.irisshaders.iris.vertices.IrisVertexFormats;
-import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.CompiledShaderProgram;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,8 +24,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(CloudRenderer.class)
 public abstract class MixinCloudRenderer {
-	@Shadow
-	private ShaderInstance shaderProgram;
 	@Shadow
 	@Nullable
 	private CloudRenderer.@Nullable CloudGeometry cachedGeometry;
@@ -56,11 +54,6 @@ public abstract class MixinCloudRenderer {
 		} else {
 			cachedGeometry = value;
 		}
-	}
-
-	@Redirect(method = "render", at = @At(value = "FIELD", target = "Lnet/caffeinemc/mods/sodium/client/render/immediate/CloudRenderer;shaderProgram:Lnet/minecraft/client/renderer/ShaderInstance;"))
-	private ShaderInstance changeShader(CloudRenderer instance) {
-		return getClouds();
 	}
 
 	@ModifyArg(remap = false, method = "emitCellGeometry3D", at = @At(value = "INVOKE", target = "Lorg/lwjgl/system/MemoryStack;nmalloc(I)J"))
@@ -94,15 +87,5 @@ public abstract class MixinCloudRenderer {
 		} else {
 			return ColorVertex.FORMAT;
 		}
-	}
-
-	private ShaderInstance getClouds() {
-		WorldRenderingPipeline pipeline = Iris.getPipelineManager().getPipelineNullable();
-
-		if (pipeline instanceof ShaderRenderingPipeline) {
-			return ((ShaderRenderingPipeline) pipeline).getShaderMap().getShader(ShaderKey.CLOUDS_SODIUM);
-		}
-
-		return shaderProgram;
 	}
 }
