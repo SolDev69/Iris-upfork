@@ -12,6 +12,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.CompiledShaderProgram;
 import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.ShaderDefines;
+import net.minecraft.client.renderer.ShaderProgram;
+import net.minecraft.resources.ResourceLocation;
 
 public class ShaderAccess {
 	public static VertexFormat IE_FORMAT = VertexFormat.builder()
@@ -47,24 +50,7 @@ public class ShaderAccess {
 		return null;
 	}
 
-    public static CompiledShaderProgram getMekanismFlameShader() {
-		WorldRenderingPipeline pipeline = Iris.getPipelineManager().getPipelineNullable();
-
-		if (pipeline instanceof ShaderRenderingPipeline) {
-
-			return ((ShaderRenderingPipeline) pipeline).getShaderMap().getShader(ShadowRenderingState.areShadowsCurrentlyBeingRendered() ? ShaderKey.MEKANISM_FLAME_SHADOW : ShaderKey.MEKANISM_FLAME);
-		}
-
-		return Minecraft.getInstance().getShaderManager().getProgram(CoreShaders.POSITION_TEX_COLOR);
-    }
-
-    public static CompiledShaderProgram getMekasuitShader() {
-		WorldRenderingPipeline pipeline = Iris.getPipelineManager().getPipelineNullable();
-
-		if (pipeline instanceof ShaderRenderingPipeline) {
-			return ((ShaderRenderingPipeline) pipeline).getShaderMap().getShader(ShadowRenderingState.areShadowsCurrentlyBeingRendered() ? ShaderKey.SHADOW_ENTITIES_CUTOUT : ShaderKey.ENTITIES_TRANSLUCENT);
-		}
-
-		return Minecraft.getInstance().getShaderManager().getProgram(CoreShaders.RENDERTYPE_ENTITY_CUTOUT);
-    }
+	public static ShaderProgram MEKANISM_FLAME = new ShaderProgram(ResourceLocation.fromNamespaceAndPath("iris", "mekanism_flame"), DefaultVertexFormat.POSITION_TEX_COLOR, ShaderDefines.EMPTY);
+	public static ShaderProgram MEKASUIT = new ShaderProgram(ResourceLocation.fromNamespaceAndPath("iris", "mekasuit"), DefaultVertexFormat.NEW_ENTITY, ShaderDefines.EMPTY);
+	public static ShaderProgram IE_COMPAT = new ShaderProgram(ResourceLocation.fromNamespaceAndPath("iris", "ie_vbo"), IE_FORMAT, ShaderDefines.EMPTY);
 }
